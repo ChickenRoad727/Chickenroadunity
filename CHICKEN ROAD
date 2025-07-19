@@ -1,0 +1,71 @@
+using UnityEngine;
+
+public class ChickenController : MonoBehaviour
+{
+    public float moveDistance = 1f;
+    public float moveSpeed = 5f;
+    private bool isMoving = false;
+    private Vector3 targetPos;
+
+    void Update()
+    {
+        if (!isMoving)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+                StartMove(Vector3.up);
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+                StartMove(Vector3.down);
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+                StartMove(Vector3.left);
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+                StartMove(Vector3.right);
+        }
+        else
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
+            if (Vector3.Distance(transform.position, targetPos) < 0.01f)
+                isMoving = false;
+        }
+    }
+
+    void StartMove(Vector3 dir)
+    {
+        targetPos = transform.position + dir * moveDistance;
+        isMoving = true;
+    }
+}
+using UnityEngine;
+
+public class CarMovement : MonoBehaviour
+{
+    public float speed = 5f;
+
+    void Update()
+    {
+        transform.Translate(Vector3.right * speed * Time.deltaTime);
+        if (transform.position.x > 10f) // Offscreen limit
+            Destroy(gameObject);
+    }
+}
+using UnityEngine;
+
+public class CarSpawner : MonoBehaviour
+{
+    public GameObject carPrefab;
+    public float spawnRate = 2f;
+    private float timer = 0f;
+
+    void Update()
+    {
+        timer += Time.deltaTime;
+        if (timer >= spawnRate)
+        {
+            Instantiate(carPrefab, transform.position, Quaternion.identity);
+            timer = 0f;
+        }
+    }
+}
+
+
+
+
